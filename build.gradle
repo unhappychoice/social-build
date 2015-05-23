@@ -1,7 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 
 version = '1.0'
-group = 'jp.dip.socialbuild'
+group = 'jp.dip.jp.dip.socialbuild'
 
 repositories {
     mavenCentral()
@@ -15,6 +16,7 @@ repositories {
 
 dependencies {
     compile group: 'org.spigotmc', name: 'spigot-api', version: '1.8-R0.1-SNAPSHOT'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -22,4 +24,16 @@ jar {
     configurations.compile.each { File file ->
         from zipTree(file)
     }
+}
+buildscript {
+    ext.kotlin_version = '0.10.195'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
 }
