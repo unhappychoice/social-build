@@ -85,7 +85,7 @@ public class GoodRepository {
 
         private fun goodTableCreateSQL() = """
             CREATE TABLE IF NOT EXISTS goods (
-                id INTEGER NOT NULL PRIMARY_KEY AUTOINCREMENT,
+                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 person_id VARCHAR(127) NOT NULL,
                 sign_id INTEGER NOT NULL,
                 created_at DATETIME,

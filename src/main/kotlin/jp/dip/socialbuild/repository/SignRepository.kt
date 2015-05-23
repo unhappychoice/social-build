@@ -13,7 +13,8 @@ public class SignRepository {
      * sign parameters data class
      */
     public data class SignParams(
-            val id: Int, val name: String, val x: Int, val y: Int, val z: Int,
+            val id: Int, val ownerId: String, val name: String,
+            val x: Int, val y: Int, val z: Int,
             val createdAt: Date, val updatedAt: Date
     )
 
@@ -31,12 +32,13 @@ public class SignRepository {
          */
         public fun save(sign: SignParams): Boolean {
             return Database().execute(insertSql(), { params ->
-                params.setString(1, sign.name)
-                params.setInt(2, sign.x)
-                params.setInt(3, sign.y)
-                params.setInt(4, sign.z)
-                params.setDate(5, sign.createdAt)
-                params.setDate(6, sign.updatedAt)
+                params.setString(1, sign.ownerId)
+                params.setString(2, sign.name)
+                params.setInt(3, sign.x)
+                params.setInt(4, sign.y)
+                params.setInt(5, sign.z)
+                params.setDate(6, sign.createdAt)
+                params.setDate(7, sign.updatedAt)
                 params
             })
         }
@@ -46,12 +48,13 @@ public class SignRepository {
          */
         public fun update(sign: SignParams): Boolean {
             return Database().update(updateSql(), { params ->
-                params.setString(1, sign.name)
-                params.setInt(2, sign.x)
-                params.setInt(3, sign.y)
-                params.setInt(4, sign.z)
-                params.setDate(5, sign.updatedAt)
-                params.setInt(6, sign.id)
+                params.setString(1, sign.ownerId)
+                params.setString(2, sign.name)
+                params.setInt(3, sign.x)
+                params.setInt(4, sign.y)
+                params.setInt(5, sign.z)
+                params.setDate(6, sign.updatedAt)
+                params.setInt(7, sign.id)
                 params
             })
         }
@@ -66,6 +69,7 @@ public class SignRepository {
             })
             return SignParams(
                     id = id,
+                    ownerId = result?.getString("owner_id") ?: "",
                     name = result?.getString("name") ?: "",
                     x = result?.getInt("x") ?: 0,
                     y = result?.getInt("y") ?: 0,
@@ -101,8 +105,8 @@ public class SignRepository {
             )
         """
 
-        private fun insertSql() = " INSERT INTO signs ( name, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ? ); "
-        private fun updateSql() = " UPDATE signs SET name = ? , x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? "
+        private fun insertSql() = " INSERT INTO signs ( owner_id, name, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ?, ? ); "
+        private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? "
         private fun selectSql() = " SELECT * FROM signs WHERE id = ? ; "
         private fun deleteSql() = " DELETE FROM signs WHERE id = ? "
     }

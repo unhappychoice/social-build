@@ -9,6 +9,15 @@ import java.sql.Time
 import java.sql.Date
 import jp.dip.socialbuild.repository.SignRepository
 import jp.dip.socialbuild.repository.GoodRepository
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.block.SignChangeEvent
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.ChatColor
+import jp.dip.socialbuild.repository.SignRepository.SignParams
+import jp.dip.socialbuild.controller.SignEventsController
 
 
 /**
@@ -19,7 +28,8 @@ public class SocialBuild : JavaPlugin() {
 
     override fun onEnable() {
         getLogger().log(Level.INFO, "SocialBuild Enabled !!")
-
+        setupDatabase()
+        getServer().getPluginManager().registerEvents(SignEventsController(), this)
     }
 
     override fun onDisable() {
