@@ -8,6 +8,7 @@ import jp.dip.socialbuild.repository.PersonRepository.PersonParams
 import java.sql.Time
 import java.sql.Date
 import jp.dip.socialbuild.repository.SignRepository
+import jp.dip.socialbuild.repository.GoodRepository
 
 
 /**
@@ -30,6 +31,6 @@ public class SocialBuild : JavaPlugin() {
 
         PersonRepository.setupTable()
         SignRepository.setupTable()
-        Database().initializeTables()
+        GoodRepository.setupTable()
     }
 }

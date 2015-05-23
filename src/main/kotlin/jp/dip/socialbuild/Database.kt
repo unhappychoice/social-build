@@ -25,13 +25,6 @@ public class Database {
     }
 
     /**
-     * creates tables if not created
-     */
-    public fun initializeTables() {
-        connection?.createStatement()?.execute(goodsTableCreateSQL)
-    }
-
-    /**
      * executes a update
      */
     public fun update(sql: String, blk: (statement :PreparedStatement) -> PreparedStatement): Boolean {
@@ -56,13 +49,4 @@ public class Database {
     // private
 
     private fun preparedStatement(sql: String) = connection?.prepareStatement(sql)!!
-
-    private val goodsTableCreateSQL = """
-        CREATE TABLE IF NOT EXISTS goods (
-            person_id VARCHAR(127) NOT NULL,
-            sign_id INTEGER NOT NULL,
-            created_at DATETIME,
-            updated_at DATETIME
-        )
-    """
 }
