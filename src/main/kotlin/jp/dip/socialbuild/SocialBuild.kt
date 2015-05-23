@@ -7,6 +7,7 @@ import jp.dip.socialbuild.repository.PersonRepository
 import jp.dip.socialbuild.repository.PersonRepository.PersonParams
 import java.sql.Time
 import java.sql.Date
+import jp.dip.socialbuild.repository.SignRepository
 
 
 /**
@@ -28,6 +29,7 @@ public class SocialBuild : JavaPlugin() {
         Database.connect("jdbc:sqlite", getDataFolder().toString(), "user", "pass")
 
         PersonRepository.setupTable()
+        SignRepository.setupTable()
         Database().initializeTables()
     }
 }

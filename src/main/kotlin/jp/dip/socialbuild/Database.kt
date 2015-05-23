@@ -28,7 +28,6 @@ public class Database {
      * creates tables if not created
      */
     public fun initializeTables() {
-        connection?.createStatement()?.execute(signsTableCreateSQL)
         connection?.createStatement()?.execute(goodsTableCreateSQL)
     }
 
@@ -57,19 +56,6 @@ public class Database {
     // private
 
     private fun preparedStatement(sql: String) = connection?.prepareStatement(sql)!!
-
-    private val signsTableCreateSQL = """
-        CREATE TABLE IF NOT EXISTS signs (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            owner_id VARCHAR(127) NOT NULL,
-            x INTEGER NOT NULL,
-            y INTEGER NOT NULL,
-            z INTEGER NOT NULL,
-            name VARCHAR(255) NOT NULL,
-            created_at DATETIME,
-            updated_at DATETIME
-        )
-    """
 
     private val goodsTableCreateSQL = """
         CREATE TABLE IF NOT EXISTS goods (
