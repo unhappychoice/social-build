@@ -12,6 +12,8 @@ public class SocialBuild : JavaPlugin() {
 
     override fun onEnable() {
         getLogger().log(Level.INFO, "SocialBuild Enabled !!")
+        Database.connect("jdbc:sqlite", getDataFolder().toString(), "user", "pass")
+        Database().initializeTables()
     }
 
     override fun onDisable() {
