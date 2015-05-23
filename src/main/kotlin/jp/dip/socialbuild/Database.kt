@@ -4,6 +4,9 @@ import java.sql.DriverManager
 import java.sql.Connection
 import java.util.logging.Logger
 import java.sql.ResultSet
+import jp.dip.socialbuild.repository.PersonRepository
+import java.sql.Statement
+import java.sql.PreparedStatement
 
 /**
  * Created by yueki on 2015/05/23.
@@ -16,50 +19,44 @@ public class Database {
          */
         fun connect(driver: String, url: String, user: String, password: String) {
             Class.forName("org.sqlite.JDBC")
-            _connection = DriverManager.getConnection(driver + ":" + url + "/database.db", user, password)
+            connection = DriverManager.getConnection(driver + ":" + url + "/database.db", user, password)
         }
-        private var _connection : Connection? = null
+        private var connection: Connection? = null
     }
 
     /**
      * creates tables if not created
      */
     public fun initializeTables() {
-        _connection?.createStatement()?.execute(peopleTableCreateSQL)
-        _connection?.createStatement()?.execute(signsTableCreateSQL)
-        _connection?.createStatement()?.execute(goodsTableCreateSQL)
+        connection?.createStatement()?.execute(signsTableCreateSQL)
+        connection?.createStatement()?.execute(goodsTableCreateSQL)
     }
 
     /**
      * executes a update
      */
-    public fun update(sql: String): Boolean {
-        val count = statement()?.executeUpdate(sql) ?: 0
-        return count > 0
+    public fun update(sql: String, blk: (statement :PreparedStatement) -> PreparedStatement): Boolean {
+        return blk(preparedStatement(sql)).executeUpdate() > 0
     }
 
     /**
      * executes a query
      */
-    public fun query(sql: String): ResultSet? = statement()?.executeQuery(sql)
+    public fun query(sql: String, blk: (statement :PreparedStatement) -> PreparedStatement): ResultSet? {
+        return blk(preparedStatement(sql)).executeQuery()
+    }
 
     /**
      * execute
      */
-    public fun execute(sql: String): Boolean = statement()?.execute(sql) ?: false
+    public fun execute(sql: String, blk: (statement :PreparedStatement) -> PreparedStatement): Boolean {
+        return blk(preparedStatement(sql)).execute()
+    }
 
+    // ---------------------------------------------------------------------------------------------
     // private
 
-    private fun statement() = _connection?.createStatement()
-
-    private val peopleTableCreateSQL = """
-        CREATE TABLE IF NOT EXISTS people (
-            id VARCHAR(127) NOT NULL PRIMARY KEY,
-            name VARCHAR(56) NOT NULL,
-            created_at DATETIME,
-            updated_at DATETIME
-        )
-    """
+    private fun preparedStatement(sql: String) = connection?.prepareStatement(sql)!!
 
     private val signsTableCreateSQL = """
         CREATE TABLE IF NOT EXISTS signs (
