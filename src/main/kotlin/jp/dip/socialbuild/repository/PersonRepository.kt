@@ -61,10 +61,12 @@ public class PersonRepository {
                 params.setString(1, id)
                 params
             })
-            val name = (result?.getString("name") ?: "")
-            val createdAt = (result?.getDate("created_at") ?: Date(0))
-            val updatedAt = (result?.getDate("updated_at") ?: Date(0))
-            return PersonParams(id, name, createdAt, updatedAt)
+            return PersonParams(
+                    id = id,
+                    name = (result?.getString("name") ?: ""),
+                    createdAt = (result?.getDate("created_at") ?: Date(0)),
+                    updatedAt = (result?.getDate("updated_at") ?: Date(0))
+            )
         }
 
         // private
