@@ -30,7 +30,7 @@ public class GoodRepository {
         }
 
         /**
-         * save a person by person parameter
+         * save a good by good parameter
          */
         public fun save(good: GoodParams): Boolean {
             return Database().execute(insertSql(), { params ->
@@ -43,7 +43,7 @@ public class GoodRepository {
         }
 
         /**
-         * update the person by person parameter
+         * update the good by good parameter
          */
         public fun update(good: GoodParams): Boolean {
             return Database().update(updateSql(), { params ->
@@ -55,7 +55,7 @@ public class GoodRepository {
         }
 
         /**
-         * get a person by id
+         * get the good by id
          */
         public fun get(id: Int): GoodParams {
             val result = Database().query(selectSql(), { params ->
@@ -71,6 +71,16 @@ public class GoodRepository {
             )
         }
 
+        /**
+         * delete the good by id
+         */
+        public fun delete(id: Int): Boolean {
+            return Database().execute(deleteSql(), { params ->
+                params.setInt(1, id)
+                params
+            })
+        }
+
         // private
 
         private fun goodTableCreateSQL() = """
@@ -84,7 +94,8 @@ public class GoodRepository {
         """
 
         private fun insertSql() = " INSERT INTO goods ( player_id, sign_id, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
-        private fun updateSql() = " UPDATE goods SET player_id = ?, sign_id = ?, updated_at = ? WHERE id = ? "
+        private fun updateSql() = " UPDATE goods SET player_id = ?, sign_id = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM goods WHERE id = ? ; "
+        private fun deleteSql() = " DELETE FROM goods WHERE id = ? ; "
     }
 }

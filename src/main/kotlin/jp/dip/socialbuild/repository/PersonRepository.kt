@@ -82,6 +82,6 @@ public class PersonRepository {
 
         private fun insertSql() = " INSERT INTO people ( id, name, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
         private fun selectSql() = " SELECT * FROM people WHERE id = ? ; "
-        private fun updateSql() = " UPDATE people SET name = ? , updated_at = ? WHERE id = ? "
+        private fun updateSql() = " UPDATE people SET name = ? , updated_at = ? WHERE id = ? ; "
     }
 }

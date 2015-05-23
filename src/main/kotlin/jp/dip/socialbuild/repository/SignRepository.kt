@@ -26,6 +26,9 @@ public class SignRepository {
             Database().execute(signsTableCreateSQL(), { it })
         }
 
+        /**
+         * save a sign by sign parameter
+         */
         public fun save(sign: SignParams): Boolean {
             return Database().execute(insertSql(), { params ->
                 params.setString(1, sign.name)
@@ -38,6 +41,9 @@ public class SignRepository {
             })
         }
 
+        /**
+         * update the sign by sign parameter
+         */
         public fun update(sign: SignParams): Boolean {
             return Database().update(updateSql(), { params ->
                 params.setString(1, sign.name)
@@ -50,6 +56,9 @@ public class SignRepository {
             })
         }
 
+        /**
+         * get the sign by id
+         */
         public fun get(id: Int): SignParams {
             val result = Database().query(selectSql(), { params ->
                 params.setInt(1, id)
@@ -66,6 +75,9 @@ public class SignRepository {
             )
         }
 
+        /**
+         * delete the sign by id
+         */
         public fun delete(id: Int): Boolean {
             return Database().execute(deleteSql(), { params ->
                 params.setInt(1, id)
