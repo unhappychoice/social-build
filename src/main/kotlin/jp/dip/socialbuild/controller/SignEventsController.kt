@@ -10,6 +10,7 @@ import org.bukkit.ChatColor
 import org.bukkit.event.block.BlockBreakEvent
 import java.sql.Date
 import java.util.logging.Logger
+import jp.dip.socialbuild.model.Sign
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -26,25 +27,8 @@ public class SignEventsController : Listener {
             return
         }
 
-        // Persist
-        val params = SignParams(
-                id = 0,
-                name = e.getLine(3),
-                ownerId = e.getPlayer().getUniqueId().toString(),
-                x = e.getBlock().getLocation().getBlockX(),
-                y = e.getBlock().getLocation().getBlockY(),
-                z = e.getBlock().getLocation().getBlockZ(),
-                createdAt = currentDate(),
-                updatedAt = currentDate()
-        )
-        SignRepository.save(params)
-
-        // 内容書き換え
-        e.setLine(0, ChatColor.BLUE.toString() + "SocialBuild")
-        e.setLine(1, ChatColor.GREEN.toString() + e.getLine(1))
-        e.setLine(2, e.getPlayer().getName())
-        e.setLine(3, ChatColor.DARK_AQUA.toString() + "good! : 0")
-        print("update sign !")
+        Sign.save(e.getPlayer(), e.getBlock().getLocation(), e.getLines().toList())
+        replaceSignText(e)
     }
 
     /**
@@ -63,5 +47,21 @@ public class SignEventsController : Listener {
 
     }
 
-    private fun currentDate(): Date = Date(java.util.Date().getTime())
+    // ---------------------------------------------------------------------------------------------
+    // private
+
+    private fun replaceSignText(e: SignChangeEvent) {
+        for ( i in 0..3) {
+            e.setLine(i, signLines(i, e))
+        }
+    }
+
+    private fun signLines(index: Int, e: SignChangeEvent): String {
+        return listOf(
+                ChatColor.BLUE.toString() + "SocialBuild",    // title
+                ChatColor.GREEN.toString() + e.getLine(1),    // sign name
+                e.getPlayer().getName(),                      // player name
+                ChatColor.DARK_AQUA.toString() + "good! : 0"  // good count
+        ).get(index)
+    }
 }
