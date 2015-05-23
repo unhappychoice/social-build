@@ -3,6 +3,7 @@ package jp.dip.socialbuild
 import java.sql.DriverManager
 import java.sql.Connection
 import java.util.logging.Logger
+import java.sql.ResultSet
 
 /**
  * Created by yueki on 2015/05/23.
@@ -10,6 +11,9 @@ import java.util.logging.Logger
 
 public class Database {
     class object {
+        /**
+         * creates and holds new connection
+         */
         fun connect(driver: String, url: String, user: String, password: String) {
             Class.forName("org.sqlite.JDBC")
             _connection = DriverManager.getConnection(driver + ":" + url + "/database.db", user, password)
@@ -25,6 +29,28 @@ public class Database {
         _connection?.createStatement()?.execute(signsTableCreateSQL)
         _connection?.createStatement()?.execute(goodsTableCreateSQL)
     }
+
+    /**
+     * executes a update
+     */
+    public fun update(sql: String): Boolean {
+        val count = statement()?.executeUpdate(sql) ?: 0
+        return count > 0
+    }
+
+    /**
+     * executes a query
+     */
+    public fun query(sql: String): ResultSet? = statement()?.executeQuery(sql)
+
+    /**
+     * execute
+     */
+    public fun execute(sql: String): Boolean = statement()?.execute(sql) ?: false
+
+    // private
+
+    private fun statement() = _connection?.createStatement()
 
     private val peopleTableCreateSQL = """
         CREATE TABLE IF NOT EXISTS people (
