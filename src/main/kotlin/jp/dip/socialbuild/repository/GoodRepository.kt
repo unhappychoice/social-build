@@ -81,6 +81,13 @@ public class GoodRepository {
             })
         }
 
+        public fun deleteBySignId(signId: Int): Boolean {
+            return Database().execute(deleteBySignIdSql(), { params ->
+                params.setInt(1, signId)
+                params
+            })
+        }
+
         // private
 
         private fun goodTableCreateSQL() = """
@@ -97,5 +104,6 @@ public class GoodRepository {
         private fun updateSql() = " UPDATE goods SET player_id = ?, sign_id = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM goods WHERE id = ? ; "
         private fun deleteSql() = " DELETE FROM goods WHERE id = ? ; "
+        private fun deleteBySignIdSql() = " DELETE FROM goods WHERE sign_id = ? ; "
     }
 }

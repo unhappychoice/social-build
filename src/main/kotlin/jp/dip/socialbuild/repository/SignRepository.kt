@@ -2,6 +2,7 @@ package jp.dip.socialbuild.repository
 
 import java.sql.Date
 import jp.dip.socialbuild.Database
+import java.sql.ResultSet
 
 /**
  * Created by yueki on 2015/05/23.
@@ -62,21 +63,25 @@ public class SignRepository {
         /**
          * get the sign by id
          */
-        public fun get(id: Int): SignParams {
+        public fun get(id: Int): SignParams? {
             val result = Database().query(selectSql(), { params ->
                 params.setInt(1, id)
                 params
             })
-            return SignParams(
-                    id = id,
-                    ownerId = result?.getString("owner_id") ?: "",
-                    name = result?.getString("name") ?: "",
-                    x = result?.getInt("x") ?: 0,
-                    y = result?.getInt("y") ?: 0,
-                    z = result?.getInt("z") ?: 0,
-                    createdAt = result?.getDate("created_at") ?: Date(0),
-                    updatedAt = result?.getDate("updated_at") ?: Date(0)
-            )
+            return signParamsFromResult(result)
+        }
+
+        /**
+         * where by location
+         */
+        public fun where(x: Int, y: Int, z: Int): SignParams? {
+            val result = Database().query(whereSql(), { params ->
+                params.setInt(1, x)
+                params.setInt(2, y)
+                params.setInt(3, z)
+                params
+            })
+            return signParamsFromResult(result)
         }
 
         /**
@@ -105,9 +110,26 @@ public class SignRepository {
             )
         """
 
-        private fun insertSql() = " INSERT INTO signs ( owner_id, name, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ?, ? ); "
-        private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? "
+        private fun signParamsFromResult(result: ResultSet?): SignParams? {
+            if (result == null) {
+                return null
+            }
+            return SignParams(
+                    id = result.getInt("id"),
+                    ownerId = result.getString("owner_id") ?: "",
+                    name = result.getString("name") ?: "",
+                    x = result.getInt("x"),
+                    y = result.getInt("y"),
+                    z = result.getInt("z"),
+                    createdAt = result.getDate("created_at") ?: Date(0),
+                    updatedAt = result.getDate("updated_at") ?: Date(0)
+            )
+        }
+
+        private fun insertSql() = " INSERT INTO signs ( owner_id, name, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ; "
+        private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM signs WHERE id = ? ; "
-        private fun deleteSql() = " DELETE FROM signs WHERE id = ? "
+        private fun whereSql()  = " SELECT * FROM signs WHERE x = ? AND y = ? AND z = ? ; "
+        private fun deleteSql() = " DELETE FROM signs WHERE id = ? ; "
     }
 }
