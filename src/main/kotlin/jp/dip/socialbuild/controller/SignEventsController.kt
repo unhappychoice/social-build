@@ -15,8 +15,9 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
-import jp.dip.socialbuild.extension.isSurvival
-import jp.dip.socialbuild.extension.owns
+import jp.dip.socialbuild.extension.isSignItem
+import jp.dip.socialbuild.extension.canBreak
+import jp.dip.socialbuild.extension.cannotBreak
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -49,12 +50,18 @@ public class SignEventsController : Listener {
         // TODO: check permission
         // TODO: reconsider breaking process
 
-        if (!isSignItem(e.getBlock())) { return }
+        if (!e.getBlock().isSignItem()) {
+            return
+        }
 
         val sign = Sign.find(e.getBlock().getLocation())
         val player = e.getPlayer()!!
 
-        if (sign == null || !canBreak(sign, player)) e.setCancelled(true) else sign.destroy()
+        if (sign == null || player.cannotBreak(sign)) {
+            e.setCancelled(true)
+        } else {
+            sign.destroy()
+        }
     }
 
     /**
@@ -64,16 +71,5 @@ public class SignEventsController : Listener {
     public fun onClickSign(e: PlayerInteractEvent) {
         // TODO: implement
         // TODO: check permission
-    }
-
-    // ---------------------------------------------------------------------------------------------
-    // private
-
-    private fun isSignItem(block: Block): Boolean {
-        return block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST
-    }
-
-    private fun canBreak(sign: Sign, player: Player): Boolean {
-        return player.owns(sign) && player.isSurvival()
     }
 }
