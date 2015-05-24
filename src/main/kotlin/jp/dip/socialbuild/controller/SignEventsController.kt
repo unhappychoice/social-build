@@ -26,6 +26,8 @@ import org.bukkit.block.Sign
 import jp.dip.socialbuild.extension.canGood
 import jp.dip.socialbuild.extension.canUnGood
 import jp.dip.socialbuild.extension.isCreative
+import jp.dip.socialbuild.model.SignText
+import jp.dip.socialbuild.Notifier
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -39,15 +41,23 @@ public class SignEventsController : Listener {
     EventHandler
     public fun onSignPlace(e: SignChangeEvent) {
         // TODO: check permission
-        // TODO: broadcast
 
-        if (e.getLine(0) != "[sb]") {
+        val player = e.getPlayer()
+        val location = e.getBlock().getLocation()
+        val lines = e.getLines().toList()
+
+        if (lines[0] != "[sb]") {
             return
         }
 
-        val sign = SocialBuildSign.create(e.getPlayer(), e.getBlock().getLocation(), e.getLines().toList())
-        sign.save()
-        sign.replaceSignText(e)
+        val sign = SocialBuildSign.create(player, location, lines)
+
+        if (sign.save()) {
+            SignText.replaceSignText(e)
+            Notifier.createSign(player)
+        } else {
+            Notifier.failToCreateSign(player)
+        }
     }
 
     /**

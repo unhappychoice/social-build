@@ -7,6 +7,7 @@ import java.sql.ResultSet
 import jp.dip.socialbuild.repository.PersonRepository
 import java.sql.Statement
 import java.sql.PreparedStatement
+import java.sql.SQLException
 
 /**
  * Created by yueki on 2015/05/23.
@@ -42,7 +43,12 @@ public class Database {
      * execute
      */
     public fun execute(sql: String, blk: (statement :PreparedStatement) -> PreparedStatement): Boolean {
-        return blk(preparedStatement(sql)).execute()
+        try {
+            blk(preparedStatement(sql)).execute()
+        } catch(e: SQLException) {
+            return false
+        }
+        return true
     }
 
     // ---------------------------------------------------------------------------------------------

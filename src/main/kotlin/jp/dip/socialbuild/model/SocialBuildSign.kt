@@ -50,8 +50,8 @@ public class SocialBuildSign(val params: SignParams) {
     /**
      * save to database
      */
-    public fun save() {
-        SignRepository.save(params)
+    public fun save(): Boolean {
+        return SignRepository.save(params)
     }
 
     /**
@@ -63,49 +63,11 @@ public class SocialBuildSign(val params: SignParams) {
     }
 
     /**
-     * make social build sign
-     */
-    public fun replaceSignText(e: SignChangeEvent) {
-        for ( i in 0..3) {
-            e.setLine(i, signLines(i, e))
-        }
-    }
-
-    /**
      * update sign count
      */
     public fun updateGoodCount(sign: org.bukkit.block.Sign) {
         val count = GoodRepository.count(params.id)
-        sign.setLine(3, goodLine(count))
+        sign.setLine(3, SignText.goodLine(count))
         sign.update()
-    }
-
-    // ---------------------------------------------------------------------------------------------
-    // private
-
-    private fun signLines(index: Int, e: SignChangeEvent): String {
-        return listOf(
-                titleLine(),
-                nameLine(e.getLine(1)),
-                playerLine(e.getPlayer().getName()),
-                goodLine(0)
-
-        ).get(index)
-    }
-
-    private fun titleLine(): String {
-        return "SocialBuild".blue()
-    }
-
-    private fun nameLine(name: String): String {
-        return name.green()
-    }
-
-    private fun playerLine(playerName: String): String {
-        return playerName
-    }
-
-    private fun goodLine(count: Int): String {
-        return "good! : ${count}".darkAqua()
     }
 }

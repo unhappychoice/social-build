@@ -14,6 +14,10 @@ public fun String.green(): String {
     return ChatColor.GREEN.toString() + this
 }
 
+public fun String.red(): String {
+    return ChatColor.RED.toString() + this
+}
+
 public fun String.darkAqua(): String {
     return ChatColor.DARK_AQUA.toString() + this
 }
