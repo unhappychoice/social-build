@@ -57,9 +57,8 @@ public class SocialBuildSign(val params: SignParams) {
     /**
      * delete from database
      */
-    public fun destroy() {
-        SignRepository.delete(params.id)
-        GoodRepository.deleteBySignId(params.id)
+    public fun destroy(): Boolean {
+        return SignRepository.delete(params.id) && GoodRepository.deleteBySignId(params.id)
     }
 
     /**

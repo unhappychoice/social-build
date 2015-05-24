@@ -68,16 +68,24 @@ public class SignEventsController : Listener {
         // TODO: check permission
         // TODO: reconsider breaking process
 
-        if (!e.getBlock().isSignItem()) {
+        val block = e.getBlock()
+        val player = e.getPlayer()
+
+        if (!block.isSignItem()) {
             return
         }
 
-        val sign = SocialBuildSign.find(e.getBlock().getLocation())
+        val sign = SocialBuildSign.find(block.getLocation())
         if (sign == null) {
             return
         }
 
-        if (e.getPlayer().canBreak(sign)) sign.destroy() else e.setCancelled(true)
+        if (player.canBreak(sign) && sign.destroy()) {
+            Notifier.destroySign(player)
+        } else {
+            e.setCancelled(true)
+            Notifier.failToDestroySign(player)
+        }
     }
 
     /**

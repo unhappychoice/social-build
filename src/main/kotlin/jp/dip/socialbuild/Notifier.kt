@@ -5,6 +5,7 @@ import jp.dip.socialbuild.extension.blue
 import org.bukkit.Bukkit
 import jp.dip.socialbuild.extension.green
 import jp.dip.socialbuild.extension.red
+import jp.dip.socialbuild.extension.darkAqua
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -13,12 +14,35 @@ import jp.dip.socialbuild.extension.red
 public class Notifier {
     class object {
         public fun createSign(player: Player) {
-            player.sendMessage("created a social build sign !!".blue())
-            Bukkit.broadcastMessage(player.getName().green() + " created a social build sign !!".blue())
+            player.notice("created a social build sign !!".blue())
+            broadcast(player.getName().green() + " created a social build sign !!".blue())
         }
 
         public fun failToCreateSign(player: Player) {
-            player.sendMessage("failed to creat a social build sign".red())
+            player.notice("failed to creat a social build sign".red())
+        }
+
+        public fun destroySign(player: Player) {
+            player.notice("destroyed the social build sign".blue())
+        }
+
+        public fun failToDestroySign(player: Player) {
+            player.notice("fail to destroyed the social build sign".red())
         }
     }
+}
+
+public fun Player.notice(message: String) {
+    sendMessage(header() + message)
+}
+
+public fun Any.broadcast(message: String) {
+    Bukkit.broadcastMessage(header() + message)
+}
+
+// -------------------------------------------------------------------------------------------------
+// private
+
+private fun header(): String {
+    return "[SB]".darkAqua()
 }
