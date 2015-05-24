@@ -22,9 +22,10 @@ import org.bukkit.event.block.Action
 import jp.dip.socialbuild.extension.owns
 import jp.dip.socialbuild.model.Good
 import jp.dip.socialbuild.extension.uuid
-import jp.dip.socialbuild.extension.isCreative
-import jp.dip.socialbuild.extension.cannotGood
 import org.bukkit.block.Sign
+import jp.dip.socialbuild.extension.canGood
+import jp.dip.socialbuild.extension.canUnGood
+import jp.dip.socialbuild.extension.isCreative
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -82,30 +83,36 @@ public class SignEventsController : Listener {
         }
 
         val sign = SocialBuildSign.find(e.getClickedBlock().getLocation())
+        val player = e.getPlayer()
 
         if (sign == null) {
             return
         }
 
-        if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            val player = e.getPlayer()
-            if (player.isCreative()) {
-                e.setCancelled(true)
-            }
+        when(e.getAction()) {
+            Action.LEFT_CLICK_BLOCK -> leftClick(player, sign, e)
+            Action.RIGHT_CLICK_BLOCK -> rightClick(player, sign, e)
+        }
+    }
 
-            if (player.cannotGood(sign)) {
-                return
-            }
+    // ---------------------------------------------------------------------------------------------
+    // private
 
+    private fun leftClick(player: Player, sign: SocialBuildSign, e: PlayerInteractEvent) {
+        if (player.canGood(sign)) {
             Good.create(player.uuid(), sign.params.id).save()
             sign.updateGoodCount(e.getClickedBlock().getState() as Sign)
-        } else if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            // right click
-            // じぶんはreturn
-            // goodしてなかったらreturn
-
-            // good削除
-            // sign good count 更新
         }
+        if (player.isCreative()) {
+            e.setCancelled(true)
+        }
+    }
+
+    private fun rightClick(player: Player, sign: SocialBuildSign, e: PlayerInteractEvent) {
+        if (!player.canUnGood(sign)) {
+            return
+        }
+        Good.where(player.uuid(), sign.params.id)?.destroy()
+        sign.updateGoodCount(e.getClickedBlock().getState() as Sign)
     }
 }

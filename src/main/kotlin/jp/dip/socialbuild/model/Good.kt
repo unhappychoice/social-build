@@ -24,9 +24,18 @@ public class Good(val params: GoodParams) {
         public fun exists(personId: String, signId: Int): Boolean {
             return GoodRepository.where(personId, signId) != null
         }
+
+        public fun where(personId: String, signId: Int): Good? {
+            val params = GoodRepository.where(personId, signId)
+            return if (params == null) null else Good(params)
+        }
     }
 
     public fun save(): Boolean {
         return GoodRepository.save(params)
+    }
+
+    public fun destroy(): Boolean {
+        return GoodRepository.delete(params.id)
     }
 }
