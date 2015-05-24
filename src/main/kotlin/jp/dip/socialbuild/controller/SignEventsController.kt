@@ -15,6 +15,8 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
+import jp.dip.socialbuild.extension.isSurvival
+import jp.dip.socialbuild.extension.owns
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -72,14 +74,6 @@ public class SignEventsController : Listener {
     }
 
     private fun canBreak(sign: Sign, player: Player): Boolean {
-        return isOwner(player, sign) && isSurvival(player)
-    }
-
-    private fun isOwner(player: Player, sign: Sign): Boolean {
-        return sign.params.ownerId.equals(player.getUniqueId().toString())
-    }
-
-    private fun isSurvival(player: Player): Boolean {
-        return player.getGameMode().equals(GameMode.SURVIVAL)
+        return player.owns(sign) && player.isSurvival()
     }
 }
