@@ -94,43 +94,49 @@ public class SignEventsController : Listener {
     EventHandler
     public fun onClickSign(e: PlayerInteractEvent) {
         // TODO: check permission
-        // TODO: broadcast
 
-        if (!e.getClickedBlock().isSignItem()) {
+        val block = e.getClickedBlock()
+        val player = e.getPlayer()
+
+        if (!block.isSignItem()) {
             return
         }
 
-        val sign = SocialBuildSign.find(e.getClickedBlock().getLocation())
-        val player = e.getPlayer()
-
+        val sign = SocialBuildSign.find(block.getLocation())
         if (sign == null) {
             return
         }
 
+        if (player.isCreative()) {
+            e.setCancelled(true)
+        }
+
         when(e.getAction()) {
-            Action.LEFT_CLICK_BLOCK -> leftClick(player, sign, e)
-            Action.RIGHT_CLICK_BLOCK -> rightClick(player, sign, e)
+            Action.LEFT_CLICK_BLOCK -> leftClick(player, sign, block)
+            Action.RIGHT_CLICK_BLOCK -> rightClick(player, sign, block)
         }
     }
 
     // ---------------------------------------------------------------------------------------------
     // private
 
-    private fun leftClick(player: Player, sign: SocialBuildSign, e: PlayerInteractEvent) {
+    private fun leftClick(player: Player, sign: SocialBuildSign, block: Block) {
         if (player.canGood(sign)) {
             Good.create(player.uuid(), sign.params.id).save()
-            sign.updateGoodCount(e.getClickedBlock().getState() as Sign)
-        }
-        if (player.isCreative()) {
-            e.setCancelled(true)
+            sign.updateGoodCount(block.getState() as Sign)
+            Notifier.sendGood(player)
+        } else {
+            Notifier.failToSendGood(player)
         }
     }
 
-    private fun rightClick(player: Player, sign: SocialBuildSign, e: PlayerInteractEvent) {
-        if (!player.canUnGood(sign)) {
-            return
+    private fun rightClick(player: Player, sign: SocialBuildSign, block: Block) {
+        if (player.canUnGood(sign)) {
+            Good.where(player.uuid(), sign.params.id)?.destroy()
+            sign.updateGoodCount(block.getState() as Sign)
+            Notifier.cancelGood(player)
+        } else {
+            Notifier.failToCancelGood(player)
         }
-        Good.where(player.uuid(), sign.params.id)?.destroy()
-        sign.updateGoodCount(e.getClickedBlock().getState() as Sign)
     }
 }

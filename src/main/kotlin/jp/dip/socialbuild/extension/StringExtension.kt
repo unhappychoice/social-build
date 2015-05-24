@@ -21,3 +21,8 @@ public fun String.red(): String {
 public fun String.darkAqua(): String {
     return ChatColor.DARK_AQUA.toString() + this
 }
+
+public fun String.yellow(): String {
+    return ChatColor.YELLOW.toString() + this
+}
+

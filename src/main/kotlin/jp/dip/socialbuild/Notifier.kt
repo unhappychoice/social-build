@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import jp.dip.socialbuild.extension.green
 import jp.dip.socialbuild.extension.red
 import jp.dip.socialbuild.extension.darkAqua
+import jp.dip.socialbuild.extension.yellow
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -28,6 +29,22 @@ public class Notifier {
 
         public fun failToDestroySign(player: Player) {
             player.notice("fail to destroyed the social build sign".red())
+        }
+
+        public fun sendGood(player: Player) {
+            player.notice("sent good !!".blue())
+        }
+
+        public fun failToSendGood(player: Player) {
+            player.notice("fail to sent good".red())
+        }
+
+        public fun cancelGood(player: Player) {
+            player.notice("cancel good".yellow())
+        }
+
+        public fun failToCancelGood(player: Player) {
+            player.notice("fail to cancel good".red())
         }
     }
 }
