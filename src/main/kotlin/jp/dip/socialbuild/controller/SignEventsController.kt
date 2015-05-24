@@ -34,9 +34,9 @@ public class SignEventsController : Listener {
             return
         }
 
-        Sign.save(e.getPlayer(), e.getBlock().getLocation(), e.getLines().toList())
-        replaceSignText(e)
-
+        val sign = Sign.create(e.getPlayer(), e.getBlock().getLocation(), e.getLines().toList())
+        sign.save()
+        sign.replaceSignText(e)
     }
 
     /**
@@ -66,21 +66,6 @@ public class SignEventsController : Listener {
 
     // ---------------------------------------------------------------------------------------------
     // private
-
-    private fun replaceSignText(e: SignChangeEvent) {
-        for ( i in 0..3) {
-            e.setLine(i, signLines(i, e))
-        }
-    }
-
-    private fun signLines(index: Int, e: SignChangeEvent): String {
-        return listOf(
-                ChatColor.BLUE.toString() + "SocialBuild",    // title
-                ChatColor.GREEN.toString() + e.getLine(1),    // sign name
-                e.getPlayer().getName(),                      // player name
-                ChatColor.DARK_AQUA.toString() + "good! : 0"  // good count
-        ).get(index)
-    }
 
     private fun isSignItem(block: Block): Boolean {
         return block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST
