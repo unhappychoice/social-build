@@ -8,43 +8,40 @@ import org.bukkit.Location
 import java.sql.Date
 import jp.dip.socialbuild.repository.GoodRepository
 import org.bukkit.event.block.SignChangeEvent
+import jp.dip.socialbuild.extension.currentDate
+import jp.dip.socialbuild.extension.uuid
 
 /**
  * Created by unhappychoice on 2015/05/24.
  */
 
-public class Sign(val params: SignParams) {
+public class SocialBuildSign(val params: SignParams) {
     class object {
 
         /**
          * factory
          */
-        public fun create(player: Player, location: Location, lines: List<String>): Sign {
+        public fun create(player: Player, location: Location, lines: List<String>): SocialBuildSign {
             val params = SignParams(
                     id = 0,
                     name = lines[3],
-                    ownerId = player.getUniqueId().toString(),
+                    ownerId = player.uuid(),
                     x = location.getBlockX(),
                     y = location.getBlockY(),
                     z = location.getBlockZ(),
                     createdAt = currentDate(),
                     updatedAt = currentDate()
             )
-            return Sign(params)
+            return SocialBuildSign(params)
         }
 
         /**
          * find a sign by location
          */
-        public fun find(location: Location): Sign? {
+        public fun find(location: Location): SocialBuildSign? {
             val params = SignRepository.where(location.getBlockX(), location.getBlockY(), location.getBlockZ())
-            return if (params == null) null else Sign(params)
+            return if (params == null) null else SocialBuildSign(params)
         }
-
-        // -----------------------------------------------------------------------------------------
-        // private
-
-        private fun currentDate(): Date = Date(java.util.Date().getTime())
     }
 
     /**
@@ -71,15 +68,41 @@ public class Sign(val params: SignParams) {
         }
     }
 
+    /**
+     * update sign count
+     */
+    public fun updateGoodCount(sign: org.bukkit.block.Sign) {
+        val count = GoodRepository.count(params.id)
+        sign.setLine(3, goodLine(count))
+        sign.update()
+    }
+
     // ---------------------------------------------------------------------------------------------
     // private
 
     private fun signLines(index: Int, e: SignChangeEvent): String {
         return listOf(
-                ChatColor.BLUE.toString() + "SocialBuild",    // title
-                ChatColor.GREEN.toString() + e.getLine(1),    // sign name
-                e.getPlayer().getName(),                      // player name
-                ChatColor.DARK_AQUA.toString() + "good! : 0"  // good count
+                titleLine(),
+                nameLine(e.getLine(1)),
+                playerLine(e.getPlayer().getName()),
+                goodLine(0)
+
         ).get(index)
+    }
+
+    private fun titleLine(): String {
+        return ChatColor.BLUE.toString() + "SocialBuild"
+    }
+
+    private fun nameLine(name: String): String {
+        return ChatColor.GREEN.toString() + name
+    }
+
+    private fun playerLine(playerName: String): String {
+        return playerName
+    }
+
+    private fun goodLine(count: Int): String {
+        return ChatColor.DARK_AQUA.toString() + "good! : ${count}"
     }
 }

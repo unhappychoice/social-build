@@ -2,27 +2,58 @@ package jp.dip.socialbuild.extension
 
 import org.bukkit.entity.Player
 import org.bukkit.GameMode
-import jp.dip.socialbuild.model.Sign
+import jp.dip.socialbuild.model.SocialBuildSign
+import jp.dip.socialbuild.model.Good
 
 /**
  * Created by unhappychoice on 2015/05/24.
  */
 
-public fun Player.canBreak(sign: Sign): Boolean {
+/**
+ * whether breaking social build signs
+ */
+public fun Player.canBreak(sign: SocialBuildSign): Boolean {
     return this.owns(sign) && this.isSurvival()
 }
 
-public fun Player.cannotBreak(sign: Sign): Boolean {
+/**
+ * whether not breaking social build signs
+ */
+public fun Player.cannotBreak(sign: SocialBuildSign): Boolean {
     return !canBreak(sign)
 }
 
-// -------------------------------------------------------------------------------------------------
-// private
+/**
+ * whether not creating good
+ */
+public fun Player.cannotGood(sign: SocialBuildSign): Boolean {
+    return owns(sign) || Good.exists(uuid(), sign.params.id)
+}
 
-private fun Player.isSurvival(): Boolean {
+/**
+ * whether the player has social build sign
+ */
+public fun Player.owns(sign: SocialBuildSign): Boolean {
+    return sign.params.ownerId.equals(getUniqueId().toString())
+}
+
+/**
+ * player's uuid
+ */
+public fun Player.uuid(): String {
+    return getUniqueId().toString()
+}
+
+/**
+ * whether player is survival
+ */
+public fun Player.isSurvival(): Boolean {
     return getGameMode().equals(GameMode.SURVIVAL)
 }
 
-private fun Player.owns(sign: Sign): Boolean {
-    return sign.params.ownerId.equals(getUniqueId().toString())
+/**
+ * whether player is creative
+ */
+public fun Player.isCreative(): Boolean {
+    return getGameMode().equals(GameMode.CREATIVE)
 }

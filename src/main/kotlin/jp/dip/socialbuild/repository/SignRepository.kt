@@ -111,9 +111,10 @@ public class SignRepository {
         """
 
         private fun signParamsFromResult(result: ResultSet?): SignParams? {
-            if (result == null) {
+            if (result == null || !result.next()) {
                 return null
             }
+
             return SignParams(
                     id = result.getInt("id"),
                     ownerId = result.getString("owner_id") ?: "",

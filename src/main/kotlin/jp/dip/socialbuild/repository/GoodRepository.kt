@@ -2,6 +2,7 @@ package jp.dip.socialbuild.repository
 
 import java.sql.Date
 import jp.dip.socialbuild.Database
+import java.sql.ResultSet
 
 /**
  * Created by yueki on 2015/05/23.
@@ -14,7 +15,7 @@ public class GoodRepository {
      */
     public data class GoodParams(
             val id: Int,
-            val playerId: String,
+            val personId: String,
             val signId: Int,
             val createdAt: Date,
             val updatedAt: Date
@@ -34,7 +35,7 @@ public class GoodRepository {
          */
         public fun save(good: GoodParams): Boolean {
             return Database().execute(insertSql(), { params ->
-                params.setString(1, good.playerId)
+                params.setString(1, good.personId)
                 params.setInt(2, good.signId)
                 params.setDate(3, good.createdAt)
                 params.setDate(4, good.updatedAt)
@@ -47,9 +48,9 @@ public class GoodRepository {
          */
         public fun update(good: GoodParams): Boolean {
             return Database().update(updateSql(), { params ->
-                params.setString(1, good.playerId)
+                params.setString(1, good.personId)
                 params.setInt(2, good.signId)
-                params.setString(3, good.playerId)
+                params.setString(3, good.personId)
                 params
             })
         }
@@ -57,18 +58,35 @@ public class GoodRepository {
         /**
          * get the good by id
          */
-        public fun get(id: Int): GoodParams {
+        public fun get(id: Int): GoodParams? {
             val result = Database().query(selectSql(), { params ->
                 params.setInt(1, id)
                 params
             })
-            return GoodParams(
-                    id = result?.getInt("id") ?: 0,
-                    playerId = result?.getString("player_id") ?: "",
-                    signId = result?.getInt("sign_id") ?: 0,
-                    createdAt = (result?.getDate("created_at") ?: Date(0)),
-                    updatedAt = (result?.getDate("updated_at") ?: Date(0))
-            )
+            return goodParamsFromResult(result)
+        }
+
+        /**
+         * where by player id and sign id
+         */
+        public fun where(personId: String, signId: Int): GoodParams? {
+            val result = Database().query(whereSql(), { params ->
+                params.setString(1, personId)
+                params.setInt(2, signId)
+                params
+            })
+            return goodParamsFromResult(result)
+        }
+
+        /**
+         * good count by sign id
+         */
+        public fun count(signId: Int): Int {
+            val result = Database().query(countSql(), { params ->
+                params.setInt(1, signId)
+                params
+            })
+            return result?.getInt("count") ?: 0
         }
 
         /**
@@ -81,6 +99,9 @@ public class GoodRepository {
             })
         }
 
+        /**
+         * delete the good by sign id
+         */
         public fun deleteBySignId(signId: Int): Boolean {
             return Database().execute(deleteBySignIdSql(), { params ->
                 params.setInt(1, signId)
@@ -88,6 +109,7 @@ public class GoodRepository {
             })
         }
 
+        // -----------------------------------------------------------------------------------------
         // private
 
         private fun goodTableCreateSQL() = """
@@ -100,9 +122,25 @@ public class GoodRepository {
             )
         """
 
-        private fun insertSql() = " INSERT INTO goods ( player_id, sign_id, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
-        private fun updateSql() = " UPDATE goods SET player_id = ?, sign_id = ?, updated_at = ? WHERE id = ? ; "
+        private fun goodParamsFromResult(result: ResultSet?): GoodParams? {
+            if (result == null || !result.next()) {
+                return null
+            }
+
+            return GoodParams(
+                    id = result.getInt("id"),
+                    personId = result.getString("person_id") ?: "",
+                    signId = result.getInt("sign_id"),
+                    createdAt = (result.getDate("created_at") ?: Date(0)),
+                    updatedAt = (result.getDate("updated_at") ?: Date(0))
+            )
+        }
+
+        private fun insertSql() = " INSERT INTO goods ( person_id, sign_id, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
+        private fun updateSql() = " UPDATE goods SET person_id = ?, sign_id = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM goods WHERE id = ? ; "
+        private fun whereSql()  = " SELECT * FROM goods WHERE person_id = ? AND sign_id = ? ; "
+        private fun countSql()  = " SELECT COUNT(*) AS count FROM goods WHERE sign_id = ? ; "
         private fun deleteSql() = " DELETE FROM goods WHERE id = ? ; "
         private fun deleteBySignIdSql() = " DELETE FROM goods WHERE sign_id = ? ; "
     }
