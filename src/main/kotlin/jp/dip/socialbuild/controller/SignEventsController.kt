@@ -27,12 +27,16 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onSignPlace(e: SignChangeEvent) {
+        // TODO: check permission
+        // TODO: broadcast
+
         if (e.getLine(0) != "[sb]") {
             return
         }
 
         Sign.save(e.getPlayer(), e.getBlock().getLocation(), e.getLines().toList())
         replaceSignText(e)
+
     }
 
     /**
@@ -40,19 +44,15 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onSignBreak(e: BlockBreakEvent) {
+        // TODO: check permission
+        // TODO: reconsider breaking process
+
         if (!isSignItem(e.getBlock())) { return }
 
         val sign = Sign.find(e.getBlock().getLocation())
         val player = e.getPlayer()!!
 
-        if (sign == null || !canBreak(sign, player)) {
-            e.setCancelled(true)
-            print("canceled!")
-            print("sign is ${sign?.params.toString()}")
-        } else {
-            sign.destroy()
-            print("destoroyed!")
-        }
+        if (sign == null || !canBreak(sign, player)) e.setCancelled(true) else sign.destroy()
     }
 
     /**
@@ -60,7 +60,8 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onClickSign(e: PlayerInteractEvent) {
-
+        // TODO: implement
+        // TODO: check permission
     }
 
     // ---------------------------------------------------------------------------------------------
