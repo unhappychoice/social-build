@@ -61,5 +61,5 @@ public fun Any.broadcast(message: String) {
 // private
 
 private fun header(): String {
-    return "[SB]".darkAqua()
+    return "[SB] ".darkAqua()
 }
