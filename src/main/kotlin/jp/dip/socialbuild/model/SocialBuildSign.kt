@@ -10,6 +10,9 @@ import jp.dip.socialbuild.repository.GoodRepository
 import org.bukkit.event.block.SignChangeEvent
 import jp.dip.socialbuild.extension.currentDate
 import jp.dip.socialbuild.extension.uuid
+import jp.dip.socialbuild.extension.blue
+import jp.dip.socialbuild.extension.green
+import jp.dip.socialbuild.extension.darkAqua
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -91,11 +94,11 @@ public class SocialBuildSign(val params: SignParams) {
     }
 
     private fun titleLine(): String {
-        return ChatColor.BLUE.toString() + "SocialBuild"
+        return "SocialBuild".blue()
     }
 
     private fun nameLine(name: String): String {
-        return ChatColor.GREEN.toString() + name
+        return name.green()
     }
 
     private fun playerLine(playerName: String): String {
@@ -103,6 +106,6 @@ public class SocialBuildSign(val params: SignParams) {
     }
 
     private fun goodLine(count: Int): String {
-        return ChatColor.DARK_AQUA.toString() + "good! : ${count}"
+        return "good! : ${count}".darkAqua()
     }
 }
