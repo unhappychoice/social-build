@@ -8,11 +8,14 @@ import jp.dip.socialbuild.Notifier
  * Created by unhappychoice on 2015/05/25.
  */
 
-public class SelfCommand() {
+public class OthersCommand {
     class object {
         public fun execute(sender: Player, args: Array<out String>) {
-            val person = Person.findOrSave(sender)
-            Notifier.goodCount(sender, person.goodCount())
+            val person = Person.where(args.first())
+            when(person) {
+                null -> Notifier.noPlayer(sender, args.first())
+                else -> Notifier.othersGoodCount(sender, person ,person.goodCount())
+            }
         }
     }
 }

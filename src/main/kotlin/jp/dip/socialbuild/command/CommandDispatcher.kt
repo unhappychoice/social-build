@@ -40,7 +40,7 @@ public class CommandDispatcher : CommandExecutor {
         } else if (isTopCommand(args)) {
 
         } else if (isOthersCommand(args)) {
-
+            OthersCommand.execute(sender, args)
         } else {
             throw IllegalArgumentException()
         }
@@ -51,10 +51,10 @@ public class CommandDispatcher : CommandExecutor {
     }
 
     private fun isTopCommand(args: Array<out String>): Boolean {
-        return args.size() > 1 && args[0].equalsIgnoreCase("top")
+        return args.size() > 0 && args[0].equalsIgnoreCase("top")
     }
 
     private fun isOthersCommand(args: Array<out String>): Boolean {
-        return args.size() > 1
+        return args.size() > 0
     }
 }

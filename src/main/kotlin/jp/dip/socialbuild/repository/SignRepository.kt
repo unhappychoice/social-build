@@ -87,9 +87,10 @@ public class SignRepository {
                 params
             })
 
-            when(result) {
-                null -> return null
-                else -> return signParamsFromResult(result)
+            if (result == null || !result.next()) {
+                return null
+            } else {
+                return signParamsFromResult(result)
             }
         }
 

@@ -73,6 +73,22 @@ public class PersonRepository {
             }
         }
 
+        public fun where(name: String): PersonParams? {
+            val result = Database().query(whereSql(), { params ->
+                params.setString(1, name)
+                params
+            })
+
+            if (result == null) {
+                return null
+            }
+
+            when(result.next()) {
+                true -> return paramsFromResult(result)
+                else -> return null
+            }
+        }
+
         // private
 
         private fun peopleTableCreateSQL() = """
@@ -84,8 +100,17 @@ public class PersonRepository {
             )
         """
 
+        private fun paramsFromResult(result: ResultSet): PersonParams {
+            return PersonParams(
+                    id = result.getString("id"),
+                    name = result.getString("name"),
+                    createdAt = result.getDate("created_at"),
+                    updatedAt = result.getDate("updated_at")
+            )
+        }
         private fun insertSql() = " INSERT INTO people ( id, name, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
         private fun selectSql() = " SELECT * FROM people WHERE id = ? ; "
+        private fun whereSql()  = " SELECT * FROM people WHERE name = ? ; "
         private fun updateSql() = " UPDATE people SET name = ? , updated_at = ? WHERE id = ? ; "
     }
 }

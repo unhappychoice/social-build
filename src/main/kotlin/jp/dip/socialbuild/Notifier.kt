@@ -7,6 +7,8 @@ import jp.dip.socialbuild.extension.green
 import jp.dip.socialbuild.extension.red
 import jp.dip.socialbuild.extension.darkAqua
 import jp.dip.socialbuild.extension.yellow
+import jp.dip.socialbuild.model.Person
+import jp.dip.socialbuild.extension.prettyString
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -15,40 +17,48 @@ import jp.dip.socialbuild.extension.yellow
 public class Notifier {
     class object {
         public fun createSign(player: Player) {
-            player.notice("created a social build sign !!".blue())
-            broadcast(player.getName().green() + " created a social build sign !!".blue())
+            player.notice("Created a social build sign !!".blue())
+            broadcast(player.getName().green() + " Created a social build sign at".blue() + " ${player.getLocation().prettyString()}".yellow() + " !!".blue())
         }
 
         public fun failToCreateSign(player: Player) {
-            player.notice("failed to creat a social build sign".red())
+            player.notice("Failed to creat a social build sign".red())
         }
 
         public fun destroySign(player: Player) {
-            player.notice("destroyed the social build sign".blue())
+            player.notice("Destroyed the social build sign".blue())
         }
 
         public fun failToDestroySign(player: Player) {
-            player.notice("fail to destroyed the social build sign".red())
+            player.notice("Fail to destroyed the social build sign".red())
         }
 
         public fun sendGood(player: Player) {
-            player.notice("sent good !!".blue())
+            player.notice("Sent good !!".blue())
         }
 
         public fun failToSendGood(player: Player) {
-            player.notice("fail to sent good".red())
+            player.notice("Fail to sent good".red())
         }
 
         public fun cancelGood(player: Player) {
-            player.notice("cancel good".yellow())
+            player.notice("Cancel good".yellow())
         }
 
         public fun failToCancelGood(player: Player) {
-            player.notice("fail to cancel good".red())
+            player.notice("Fail to cancel good".red())
         }
 
         public fun goodCount(player: Player, count: Int) {
-            player.notice("you have ${count} goods !!".blue())
+            player.notice("You have ${count} goods !!".blue())
+        }
+
+        public fun othersGoodCount(player: Player, other: Person, count: Int) {
+            player.notice("${other.params.name} has ${count} goods !!".blue())
+        }
+
+        public fun noPlayer(player: Player, name: String) {
+            player.notice("${name} does not exists".red())
         }
     }
 }
