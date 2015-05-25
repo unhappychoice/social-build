@@ -11,7 +11,7 @@ softdepend: []
 commands:
   sb:
     description: SocialBuild Command
-    usage: /sb (top),(playername)
+    usage: /sb [playername, top]
 
 permissions:
   sb.*:
@@ -28,25 +28,31 @@ permissions:
       sb.cancel: true
       sb.break.other: true
   sb.user:
-    description: gives user permissions.
+    description: gives normal permissions.
     default: true
     children:
-      sb.place: true
-      sb.break: true
-      sb.top: true
-      sb.self: true
-      sb.other: true
-  sb.voter:
-    description: gives vote permissions.
+      sb.sign: true
+      sb.voter: true
+      sb.command: true
+  sb.sign:
+    description: gives create/destory sign permissions.
     default: false
     children:
       sb.place: true
       sb.break: true
+  sb.voter:
+    description: gives vote permissions.
+    default: false
+    children:
+      sb.vote: true
+      sb.cancel: true
+  sb.command:
+    description: gives command permissions.
+    default: false
+    children:
       sb.top: true
       sb.self: true
       sb.other: true
-      sb.vote: true
-      sb.cancel: true
   sb.place:
     description: can place SocialBuild sign
     default: op

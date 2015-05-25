@@ -4,22 +4,13 @@ import org.bukkit.event.Listener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.block.SignChangeEvent
-import jp.dip.socialbuild.repository.SignRepository.SignParams
-import jp.dip.socialbuild.repository.SignRepository
-import org.bukkit.ChatColor
 import org.bukkit.event.block.BlockBreakEvent
-import java.sql.Date
-import java.util.logging.Logger
 import jp.dip.socialbuild.model.SocialBuildSign
-import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import jp.dip.socialbuild.extension.isSignItem
 import jp.dip.socialbuild.extension.canBreak
-import jp.dip.socialbuild.extension.cannotBreak
 import org.bukkit.event.block.Action
-import jp.dip.socialbuild.extension.owns
 import jp.dip.socialbuild.model.Good
 import jp.dip.socialbuild.extension.uuid
 import org.bukkit.block.Sign
@@ -28,6 +19,7 @@ import jp.dip.socialbuild.extension.canUnGood
 import jp.dip.socialbuild.extension.isCreative
 import jp.dip.socialbuild.model.SignText
 import jp.dip.socialbuild.Notifier
+import jp.dip.socialbuild.extension.canPlace
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -40,8 +32,6 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onSignPlace(e: SignChangeEvent) {
-        // TODO: check permission
-
         val player = e.getPlayer()
         val location = e.getBlock().getLocation()
         val lines = e.getLines().toList()
@@ -52,7 +42,7 @@ public class SignEventsController : Listener {
 
         val sign = SocialBuildSign.create(player, location, lines)
 
-        if (sign.save()) {
+        if (player.canPlace() && sign.save()) {
             SignText.replaceSignText(e)
             Notifier.createSign(player)
         } else {
@@ -65,7 +55,6 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onSignBreak(e: BlockBreakEvent) {
-        // TODO: check permission
         // TODO: reconsider breaking process
 
         val block = e.getBlock()
@@ -93,8 +82,6 @@ public class SignEventsController : Listener {
      */
     EventHandler
     public fun onClickSign(e: PlayerInteractEvent) {
-        // TODO: check permission
-
         val block = e.getClickedBlock()
         val player = e.getPlayer()
 

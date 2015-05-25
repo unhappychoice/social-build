@@ -16,6 +16,10 @@ import jp.dip.socialbuild.extension.prettyString
 
 public class Notifier {
     class object {
+        public fun noPermission(player: Player, permission: String) {
+            player.notice("you don't have ${permission} permission")
+        }
+
         public fun createSign(player: Player) {
             player.notice("Created a social build sign !!".blue())
             broadcast(player.getName().green() + " Created a social build sign at".blue() + " ${player.getLocation().prettyString()}".yellow() + " !!".blue())

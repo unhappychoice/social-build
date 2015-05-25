@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.command.Command
 import jp.dip.socialbuild.extension.isSocialBuildCommand
+import jp.dip.socialbuild.extension.checkPermission
 
 /**
  * Created by unhappychoice on 2015/05/25.
@@ -29,17 +30,15 @@ public class CommandDispatcher : CommandExecutor {
     // private
 
     private fun dispatch(sender: Player?, args: Array<out String>?) {
-        // TODO: check permission
-
         if (sender == null || args == null) {
             throw IllegalArgumentException()
         }
 
-        if (isSelfCommand(args)) {
+        if (isSelfCommand(args) && sender.checkPermission("sb.self")) {
             SelfCommand.execute(sender, args)
         } else if (isTopCommand(args)) {
 
-        } else if (isOthersCommand(args)) {
+        } else if (isOthersCommand(args) && sender.checkPermission("sb.other")) {
             OthersCommand.execute(sender, args)
         } else {
             throw IllegalArgumentException()
