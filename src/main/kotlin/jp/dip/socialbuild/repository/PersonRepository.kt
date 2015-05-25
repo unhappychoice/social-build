@@ -56,17 +56,21 @@ public class PersonRepository {
         /**
          * get a person by id
          */
-        public fun get(id: String): PersonParams {
+        public fun get(id: String): PersonParams? {
             val result = Database().query(selectSql(), { params ->
                 params.setString(1, id)
                 params
             })
-            return PersonParams(
-                    id = id,
-                    name = (result?.getString("name") ?: ""),
-                    createdAt = (result?.getDate("created_at") ?: Date(0)),
-                    updatedAt = (result?.getDate("updated_at") ?: Date(0))
-            )
+            if (result?.next() ?: false) {
+                return PersonParams(
+                        id = id,
+                        name = (result?.getString("name") ?: ""),
+                        createdAt = (result?.getDate("created_at") ?: Date(0)),
+                        updatedAt = (result?.getDate("updated_at") ?: Date(0))
+                )
+            } else {
+                return null
+            }
         }
 
         // private

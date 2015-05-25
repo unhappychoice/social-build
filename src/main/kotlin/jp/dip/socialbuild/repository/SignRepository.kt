@@ -3,6 +3,7 @@ package jp.dip.socialbuild.repository
 import java.sql.Date
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
+import java.util.ArrayList
 
 /**
  * Created by yueki on 2015/05/23.
@@ -68,7 +69,11 @@ public class SignRepository {
                 params.setInt(1, id)
                 params
             })
-            return signParamsFromResult(result)
+
+            when(result) {
+                null -> return null
+                else -> return signParamsFromResult(result)
+            }
         }
 
         /**
@@ -81,7 +86,35 @@ public class SignRepository {
                 params.setInt(3, z)
                 params
             })
-            return signParamsFromResult(result)
+
+            when(result) {
+                null -> return null
+                else -> return signParamsFromResult(result)
+            }
+        }
+
+        /**
+         * where by owner id
+         */
+        public fun where(ownerId: String): List<SignParams> {
+            val result = Database().query(whereByOwnerSql(), { params ->
+                params.setString(1, ownerId)
+                params
+            })
+
+            if (result == null) {
+                return listOf()
+            }
+
+            val paramsList = arrayListOf<SignParams>()
+            while(result.next()) {
+                paramsList.add(signParamsFromResult(result))
+            }
+
+            when(paramsList.size()) {
+                0 -> return listOf()
+                else -> return paramsList.toList()
+            }
         }
 
         /**
@@ -110,11 +143,7 @@ public class SignRepository {
             )
         """
 
-        private fun signParamsFromResult(result: ResultSet?): SignParams? {
-            if (result == null || !result.next()) {
-                return null
-            }
-
+        private fun signParamsFromResult(result: ResultSet): SignParams {
             return SignParams(
                     id = result.getInt("id"),
                     ownerId = result.getString("owner_id") ?: "",
@@ -131,6 +160,7 @@ public class SignRepository {
         private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM signs WHERE id = ? ; "
         private fun whereSql()  = " SELECT * FROM signs WHERE x = ? AND y = ? AND z = ? ; "
+        private fun whereByOwnerSql() = " SELECT * FROM signs WHERE owner_id = ? ; "
         private fun deleteSql() = " DELETE FROM signs WHERE id = ? ; "
     }
 }

@@ -46,6 +46,10 @@ public class Notifier {
         public fun failToCancelGood(player: Player) {
             player.notice("fail to cancel good".red())
         }
+
+        public fun goodCount(player: Player, count: Int) {
+            player.notice("you have ${count} goods !!".blue())
+        }
     }
 }
 

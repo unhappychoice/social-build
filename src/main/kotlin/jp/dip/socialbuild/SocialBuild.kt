@@ -18,6 +18,7 @@ import org.bukkit.event.Listener
 import org.bukkit.ChatColor
 import jp.dip.socialbuild.repository.SignRepository.SignParams
 import jp.dip.socialbuild.controller.SignEventsController
+import jp.dip.socialbuild.command.CommandDispatcher
 
 
 /**
@@ -30,6 +31,7 @@ public class SocialBuild : JavaPlugin() {
         getLogger().log(Level.INFO, "SocialBuild Enabled !!")
         setupDatabase()
         getServer().getPluginManager().registerEvents(SignEventsController(), this)
+        getCommand("sb").setExecutor(CommandDispatcher())
     }
 
     override fun onDisable() {

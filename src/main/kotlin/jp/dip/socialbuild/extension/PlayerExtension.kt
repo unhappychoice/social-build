@@ -27,19 +27,16 @@ public fun Player.cannotBreak(sign: SocialBuildSign): Boolean {
  * whether not creating good
  */
 public fun Player.canGood(sign: SocialBuildSign): Boolean {
-    return !owns(sign) && !Good.exists(uuid(), sign.params.id)
+    return !Good.exists(uuid(), sign.params.id)
 }
 
 /**
  * whether delete good
  */
 public fun Player.canUnGood(sign: SocialBuildSign): Boolean {
-    return !owns(sign) && Good.exists(uuid(), sign.params.id)
+    return Good.exists(uuid(), sign.params.id)
 }
 
-/**
- * whether the player has social build sign
- */
 public fun Player.owns(sign: SocialBuildSign): Boolean {
     return sign.params.ownerId.equals(getUniqueId().toString())
 }
