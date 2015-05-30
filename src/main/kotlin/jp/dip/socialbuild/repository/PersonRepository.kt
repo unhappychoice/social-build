@@ -2,8 +2,8 @@ package jp.dip.socialbuild.repository
 
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
-import java.sql.Time
 import java.sql.Date
+import jp.dip.socialbuild.DatabaseConfig
 
 
 /**
@@ -24,7 +24,7 @@ public class PersonRepository {
         /**
          * setup person table
          */
-        public fun setupTable() {
+        public fun setupTable(_: DatabaseConfig) {
             Database().execute(peopleTableCreateSQL(), { it })
         }
 

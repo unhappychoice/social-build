@@ -15,13 +15,33 @@ import java.sql.SQLException
 
 public class Database {
     class object {
+
         /**
          * creates and holds new connection
          */
-        fun connect(driver: String, url: String, user: String, password: String) {
-            Class.forName("org.sqlite.JDBC")
-            connection = DriverManager.getConnection(driver + ":" + url + "/database.db", user, password)
+        public fun connect(config: DatabaseConfig) {
+            println("connect to database")
+            println("driver: ${config.driver()}")
+            println("url: ${config.url()}")
+            println("user: ${config.user()}")
+            println("password: ${config.password()}")
+
+            initializeDriver(config)
+            connection = DriverManager.getConnection(
+                    config.url(),
+                    config.user(),
+                    config.password()
+            )
+            println("connected")
         }
+
+        private fun initializeDriver(config: DatabaseConfig) {
+            when(config.adapter()) {
+                "sqlite" -> Class.forName(config.driver())
+                "mysql"  -> Class.forName(config.driver()).newInstance()
+            }
+        }
+
         private var connection: Connection? = null
     }
 

@@ -3,7 +3,7 @@ package jp.dip.socialbuild.repository
 import java.sql.Date
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
-import java.util.ArrayList
+import jp.dip.socialbuild.DatabaseConfig
 
 /**
  * Created by yueki on 2015/05/23.
@@ -25,8 +25,8 @@ public class SignRepository {
         /**
          * setup sign table
          */
-        public fun setupTable() {
-            Database().execute(signsTableCreateSQL(), { it })
+        public fun setupTable(config: DatabaseConfig) {
+            Database().execute(signsTableCreateSQL(config), { it })
         }
 
         /**
@@ -131,9 +131,9 @@ public class SignRepository {
         // -----------------------------------------------------------------------------------------
         // private
 
-        private fun signsTableCreateSQL() = """
+        private fun signsTableCreateSQL(config: DatabaseConfig) = """
             CREATE TABLE IF NOT EXISTS signs (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                id INTEGER NOT NULL PRIMARY KEY ${config.autoIncrement()},
                 owner_id VARCHAR(127) NOT NULL,
                 x INTEGER NOT NULL,
                 y INTEGER NOT NULL,

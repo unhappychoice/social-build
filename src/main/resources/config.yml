@@ -1,0 +1,5 @@
+database:
+  adapter: sqlite          # sqlite or mysql ( make sure to create socialbuild db when use mysql
+  url: mysql://localhost   # url to mysql server       ( will be ignored when use sqlite
+  username: username       # user name of mysql server ( will be ignored when use sqlite
+  password: password       # password of  mysql server ( will be ignored when use sqlite

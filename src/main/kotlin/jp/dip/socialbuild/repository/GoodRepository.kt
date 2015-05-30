@@ -3,6 +3,7 @@ package jp.dip.socialbuild.repository
 import java.sql.Date
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
+import jp.dip.socialbuild.DatabaseConfig
 
 /**
  * Created by yueki on 2015/05/23.
@@ -26,8 +27,8 @@ public class GoodRepository {
         /**
          * setup person table
          */
-        public fun setupTable() {
-            Database().execute(goodTableCreateSQL(), { it })
+        public fun setupTable(config: DatabaseConfig) {
+            Database().execute(goodTableCreateSQL(config), { it })
         }
 
         /**
@@ -86,7 +87,11 @@ public class GoodRepository {
                 params.setInt(1, signId)
                 params
             })
-            return result?.getInt("count") ?: 0
+            if (result?.next() ?: false) {
+                return result?.getInt("count") ?: 0
+            } else {
+                return 0
+            }
         }
 
         /**
@@ -112,9 +117,9 @@ public class GoodRepository {
         // -----------------------------------------------------------------------------------------
         // private
 
-        private fun goodTableCreateSQL() = """
+        private fun goodTableCreateSQL(config: DatabaseConfig) = """
             CREATE TABLE IF NOT EXISTS goods (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                id INTEGER NOT NULL PRIMARY KEY ${config.autoIncrement()},
                 person_id VARCHAR(127) NOT NULL,
                 sign_id INTEGER NOT NULL,
                 created_at DATETIME,
