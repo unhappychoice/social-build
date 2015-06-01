@@ -61,16 +61,7 @@ public class PersonRepository {
                 params.setString(1, id)
                 params
             })
-            if (result?.next() ?: false) {
-                return PersonParams(
-                        id = id,
-                        name = (result?.getString("name") ?: ""),
-                        createdAt = (result?.getDate("created_at") ?: Date(0)),
-                        updatedAt = (result?.getDate("updated_at") ?: Date(0))
-                )
-            } else {
-                return null
-            }
+            return personParams(result)
         }
 
         public fun where(name: String): PersonParams? {
@@ -79,14 +70,7 @@ public class PersonRepository {
                 params
             })
 
-            if (result == null) {
-                return null
-            }
-
-            when(result.next()) {
-                true -> return paramsFromResult(result)
-                else -> return null
-            }
+            return personParams(result)
         }
 
         // private
@@ -100,7 +84,10 @@ public class PersonRepository {
             )
         """
 
-        private fun paramsFromResult(result: ResultSet): PersonParams {
+        private fun personParams(result: ResultSet?): PersonParams? {
+            if (result == null || !result.next()) {
+                return null
+            }
             return PersonParams(
                     id = result.getString("id"),
                     name = result.getString("name"),
@@ -108,6 +95,7 @@ public class PersonRepository {
                     updatedAt = result.getDate("updated_at")
             )
         }
+
         private fun insertSql() = " INSERT INTO people ( id, name, created_at, updated_at ) VALUES ( ?, ?, ?, ? ); "
         private fun selectSql() = " SELECT * FROM people WHERE id = ? ; "
         private fun whereSql()  = " SELECT * FROM people WHERE name = ? ; "

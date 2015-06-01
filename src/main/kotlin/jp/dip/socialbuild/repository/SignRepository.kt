@@ -70,9 +70,10 @@ public class SignRepository {
                 params
             })
 
-            when(result) {
-                null -> return null
-                else -> return signParamsFromResult(result)
+            if (result != null && result.next()) {
+                return signParams(result)
+            } else {
+                return null
             }
         }
 
@@ -87,10 +88,10 @@ public class SignRepository {
                 params
             })
 
-            if (result == null || !result.next()) {
-                return null
+            if (result != null && result.next()) {
+                return signParams(result)
             } else {
-                return signParamsFromResult(result)
+                return null
             }
         }
 
@@ -109,13 +110,10 @@ public class SignRepository {
 
             val paramsList = arrayListOf<SignParams>()
             while(result.next()) {
-                paramsList.add(signParamsFromResult(result))
+                paramsList.add(signParams(result))
             }
 
-            when(paramsList.size()) {
-                0 -> return listOf()
-                else -> return paramsList.toList()
-            }
+            return paramsList.toList()
         }
 
         /**
@@ -144,7 +142,7 @@ public class SignRepository {
             )
         """
 
-        private fun signParamsFromResult(result: ResultSet): SignParams {
+        private fun signParams(result: ResultSet): SignParams {
             return SignParams(
                     id = result.getInt("id"),
                     ownerId = result.getString("owner_id") ?: "",

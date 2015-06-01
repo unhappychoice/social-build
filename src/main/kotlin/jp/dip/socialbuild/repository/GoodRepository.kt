@@ -64,7 +64,7 @@ public class GoodRepository {
                 params.setInt(1, id)
                 params
             })
-            return goodParamsFromResult(result)
+            return goodParams(result)
         }
 
         /**
@@ -76,7 +76,7 @@ public class GoodRepository {
                 params.setInt(2, signId)
                 params
             })
-            return goodParamsFromResult(result)
+            return goodParams(result)
         }
 
         /**
@@ -87,8 +87,8 @@ public class GoodRepository {
                 params.setInt(1, signId)
                 params
             })
-            if (result?.next() ?: false) {
-                return result?.getInt("count") ?: 0
+            if (result != null && result.next()) {
+                return result.getInt("count")
             } else {
                 return 0
             }
@@ -127,7 +127,7 @@ public class GoodRepository {
             )
         """
 
-        private fun goodParamsFromResult(result: ResultSet?): GoodParams? {
+        private fun goodParams(result: ResultSet?): GoodParams? {
             if (result == null || !result.next()) {
                 return null
             }
