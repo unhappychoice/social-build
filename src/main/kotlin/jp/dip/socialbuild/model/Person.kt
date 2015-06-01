@@ -13,6 +13,21 @@ import jp.dip.socialbuild.extension.currentDate
 public class Person(val params: PersonParams) {
 
     class object {
+        public fun build(player: Player): Person {
+            val params = PersonParams(
+                    id = player.uuid(),
+                    name = player.getName(),
+                    createdAt = currentDate(),
+                    updatedAt = currentDate()
+            )
+            return Person(params)
+        }
+
+        public fun create(player: Player): Person {
+            val person = build(player)
+            person.save()
+            return person
+        }
 
         public fun find(uuid: String): Person? {
             val params = PersonRepository.get(uuid)
@@ -22,26 +37,12 @@ public class Person(val params: PersonParams) {
             }
         }
 
-        public fun findOrSave(player: Player): Person {
+        public fun findOrCreate(player: Player): Person {
             val params = PersonRepository.get(player.uuid())
             when(params) {
-                null -> {
-                    val person = create(player)
-                    person.save()
-                    return person
-                }
+                null -> return create(player)
                 else -> return Person(params)
             }
-        }
-
-        public fun create(player: Player): Person {
-            val params = PersonParams(
-                    id = player.uuid(),
-                    name = player.getName(),
-                    createdAt = currentDate(),
-                    updatedAt = currentDate()
-            )
-            return Person(params)
         }
 
         public fun where(name: String): Person? {

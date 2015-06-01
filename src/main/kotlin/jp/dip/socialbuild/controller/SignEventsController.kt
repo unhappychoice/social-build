@@ -40,7 +40,7 @@ public class SignEventsController : Listener {
             return
         }
 
-        val sign = SocialBuildSign.create(player, location, lines)
+        val sign = SocialBuildSign.build(player, location, lines)
 
         if (player.canPlace() && sign.save()) {
             SignText.replaceSignText(e)

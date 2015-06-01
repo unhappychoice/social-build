@@ -11,7 +11,7 @@ import jp.dip.socialbuild.Notifier
 public class SelfCommand() {
     class object {
         public fun execute(sender: Player, args: Array<out String>) {
-            val person = Person.findOrSave(sender)
+            val person = Person.findOrCreate(sender)
             Notifier.goodCount(sender, person.goodCount())
         }
     }

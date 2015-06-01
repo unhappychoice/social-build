@@ -1,9 +1,9 @@
 package jp.dip.socialbuild.repository
 
-import java.sql.Date
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
 import jp.dip.socialbuild.DatabaseConfig
+import java.sql.Timestamp
 
 /**
  * Created by yueki on 2015/05/23.
@@ -15,9 +15,15 @@ public class SignRepository {
      * sign parameters data class
      */
     public data class SignParams(
-            val id: Int, val ownerId: String, val name: String,
-            val x: Int, val y: Int, val z: Int,
-            val createdAt: Date, val updatedAt: Date
+            val id: Int,
+            val ownerId: String,
+            val name: String,
+            val world: String,
+            val x: Int,
+            val y: Int,
+            val z: Int,
+            val createdAt: Timestamp,
+            val updatedAt: Timestamp
     )
 
     class object {
@@ -36,11 +42,12 @@ public class SignRepository {
             return Database().execute(insertSql(), { params ->
                 params.setString(1, sign.ownerId)
                 params.setString(2, sign.name)
-                params.setInt(3, sign.x)
-                params.setInt(4, sign.y)
-                params.setInt(5, sign.z)
-                params.setDate(6, sign.createdAt)
-                params.setDate(7, sign.updatedAt)
+                params.setString(3, sign.world)
+                params.setInt(4, sign.x)
+                params.setInt(5, sign.y)
+                params.setInt(6, sign.z)
+                params.setTimestamp(7, sign.createdAt)
+                params.setTimestamp(8, sign.updatedAt)
                 params
             })
         }
@@ -52,11 +59,12 @@ public class SignRepository {
             return Database().update(updateSql(), { params ->
                 params.setString(1, sign.ownerId)
                 params.setString(2, sign.name)
-                params.setInt(3, sign.x)
-                params.setInt(4, sign.y)
-                params.setInt(5, sign.z)
-                params.setDate(6, sign.updatedAt)
-                params.setInt(7, sign.id)
+                params.setString(3,sign.world)
+                params.setInt(4, sign.x)
+                params.setInt(5, sign.y)
+                params.setInt(6, sign.z)
+                params.setTimestamp(7, sign.updatedAt)
+                params.setInt(8, sign.id)
                 params
             })
         }
@@ -80,11 +88,12 @@ public class SignRepository {
         /**
          * where by location
          */
-        public fun where(x: Int, y: Int, z: Int): SignParams? {
+        public fun where(world: String, x: Int, y: Int, z: Int): SignParams? {
             val result = Database().query(whereSql(), { params ->
-                params.setInt(1, x)
-                params.setInt(2, y)
-                params.setInt(3, z)
+                params.setString(1, world)
+                params.setInt(2, x)
+                params.setInt(3, y)
+                params.setInt(4, z)
                 params
             })
 
@@ -137,6 +146,7 @@ public class SignRepository {
                 y INTEGER NOT NULL,
                 z INTEGER NOT NULL,
                 name VARCHAR(255) NOT NULL,
+                world VARCHAR(255) NOT NULL,
                 created_at DATETIME,
                 updated_at DATETIME
             )
@@ -145,20 +155,21 @@ public class SignRepository {
         private fun signParams(result: ResultSet): SignParams {
             return SignParams(
                     id = result.getInt("id"),
-                    ownerId = result.getString("owner_id") ?: "",
-                    name = result.getString("name") ?: "",
+                    ownerId = result.getString("owner_id"),
+                    name = result.getString("name"),
+                    world = result.getString("world"),
                     x = result.getInt("x"),
                     y = result.getInt("y"),
                     z = result.getInt("z"),
-                    createdAt = result.getDate("created_at") ?: Date(0),
-                    updatedAt = result.getDate("updated_at") ?: Date(0)
+                    createdAt = result.getTimestamp("created_at"),
+                    updatedAt = result.getTimestamp("updated_at")
             )
         }
 
-        private fun insertSql() = " INSERT INTO signs ( owner_id, name, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ; "
-        private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? ; "
+        private fun insertSql() = " INSERT INTO signs ( owner_id, name, world, x, y, z, created_at, updated_at ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ; "
+        private fun updateSql() = " UPDATE signs SET owner_id = ?, name = ?, world = ?, x = ?, y = ?, z = ?, updated_at = ? WHERE id = ? ; "
         private fun selectSql() = " SELECT * FROM signs WHERE id = ? ; "
-        private fun whereSql()  = " SELECT * FROM signs WHERE x = ? AND y = ? AND z = ? ; "
+        private fun whereSql()  = " SELECT * FROM signs WHERE world = ? AND x = ? AND y = ? AND z = ? ; "
         private fun whereByOwnerSql() = " SELECT * FROM signs WHERE owner_id = ? ; "
         private fun deleteSql() = " DELETE FROM signs WHERE id = ? ; "
     }

@@ -1,9 +1,9 @@
 package jp.dip.socialbuild.repository
 
-import java.sql.Date
 import jp.dip.socialbuild.Database
 import java.sql.ResultSet
 import jp.dip.socialbuild.DatabaseConfig
+import java.sql.Timestamp
 
 /**
  * Created by yueki on 2015/05/23.
@@ -18,8 +18,8 @@ public class GoodRepository {
             val id: Int,
             val personId: String,
             val signId: Int,
-            val createdAt: Date,
-            val updatedAt: Date
+            val createdAt: Timestamp,
+            val updatedAt: Timestamp
     )
 
     class object {
@@ -38,8 +38,8 @@ public class GoodRepository {
             return Database().execute(insertSql(), { params ->
                 params.setString(1, good.personId)
                 params.setInt(2, good.signId)
-                params.setDate(3, good.createdAt)
-                params.setDate(4, good.updatedAt)
+                params.setTimestamp(3, good.createdAt)
+                params.setTimestamp(4, good.updatedAt)
                 params
             })
         }
@@ -134,10 +134,10 @@ public class GoodRepository {
 
             return GoodParams(
                     id = result.getInt("id"),
-                    personId = result.getString("person_id") ?: "",
+                    personId = result.getString("person_id"),
                     signId = result.getInt("sign_id"),
-                    createdAt = (result.getDate("created_at") ?: Date(0)),
-                    updatedAt = (result.getDate("updated_at") ?: Date(0))
+                    createdAt = result.getTimestamp("created_at"),
+                    updatedAt = result.getTimestamp("updated_at")
             )
         }
 

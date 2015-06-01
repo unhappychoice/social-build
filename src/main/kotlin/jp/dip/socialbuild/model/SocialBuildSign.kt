@@ -18,11 +18,12 @@ public class SocialBuildSign(val params: SignParams) {
         /**
          * factory
          */
-        public fun create(player: Player, location: Location, lines: List<String>): SocialBuildSign {
+        public fun build(player: Player, location: Location, lines: List<String>): SocialBuildSign {
             val params = SignParams(
                     id = 0,
-                    name = lines[3],
+                    name = lines[1],
                     ownerId = player.uuid(),
+                    world = location.getWorld().getName(),
                     x = location.getBlockX(),
                     y = location.getBlockY(),
                     z = location.getBlockZ(),
@@ -36,7 +37,12 @@ public class SocialBuildSign(val params: SignParams) {
          * find a sign by location
          */
         public fun find(location: Location): SocialBuildSign? {
-            val params = SignRepository.where(location.getBlockX(), location.getBlockY(), location.getBlockZ())
+            val params = SignRepository.where(
+                    location.getWorld().getName(),
+                    location.getBlockX(),
+                    location.getBlockY(),
+                    location.getBlockZ()
+            )
             return if (params == null) null else SocialBuildSign(params)
         }
 
