@@ -68,6 +68,14 @@ public class Notifier {
         public fun fillInName(player: Player) {
             player.notice("fill in the sign name on second line !!".yellow())
         }
+
+        public fun help(player: Player) {
+            player.notice("=========================".yellow())
+            player.notice("/sb - show own good count".blue())
+            player.notice("/sb <name> - show <name>'s good count".blue())
+            player.notice("/sb help - show commands help".blue())
+            player.notice("=========================".yellow())
+        }
     }
 }
 

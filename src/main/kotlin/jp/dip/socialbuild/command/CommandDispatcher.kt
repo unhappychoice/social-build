@@ -38,6 +38,8 @@ public class CommandDispatcher : CommandExecutor {
             SelfCommand.execute(sender, args)
         } else if (isTopCommand(args)) {
 
+        } else if (isHelpCommand(args)) {
+            HelpCommand.execute(sender, args)
         } else if (isOthersCommand(args) && sender.checkPermission("sb.other")) {
             OthersCommand.execute(sender, args)
         } else {
@@ -50,7 +52,11 @@ public class CommandDispatcher : CommandExecutor {
     }
 
     private fun isTopCommand(args: Array<out String>): Boolean {
-        return args.size() > 0 && args[0].equalsIgnoreCase("top")
+        return args[0].equalsIgnoreCase("top")
+    }
+
+    private fun isHelpCommand(args: Array<out String>): Boolean {
+        return args[0].equalsIgnoreCase("help")
     }
 
     private fun isOthersCommand(args: Array<out String>): Boolean {
