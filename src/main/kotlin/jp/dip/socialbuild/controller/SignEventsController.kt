@@ -9,7 +9,6 @@ import jp.dip.socialbuild.model.SocialBuildSign
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import jp.dip.socialbuild.extension.isSignItem
-import jp.dip.socialbuild.extension.canBreak
 import org.bukkit.event.block.Action
 import jp.dip.socialbuild.model.Good
 import jp.dip.socialbuild.extension.uuid
@@ -20,6 +19,8 @@ import jp.dip.socialbuild.extension.isCreative
 import jp.dip.socialbuild.model.SignText
 import jp.dip.socialbuild.Notifier
 import jp.dip.socialbuild.extension.canPlace
+import jp.dip.socialbuild.extension.isAttachedSign
+import jp.dip.socialbuild.extension.attachedSign
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -65,20 +66,13 @@ public class SignEventsController : Listener {
         val block = e.getBlock()
         val player = e.getPlayer()
 
-        if (!block.isSignItem()) {
-            return
-        }
-
-        val sign = SocialBuildSign.find(block.getLocation())
-        if (sign == null) {
-            return
-        }
-
-        if (player.canBreak(sign) && sign.destroy()) {
-            Notifier.destroySign(player)
-        } else {
-            e.setCancelled(true)
-            Notifier.failToDestroySign(player)
+        if (block.isSignItem()) {
+            SocialBuildSign.breakSign(block.getLocation(), e, player)
+        } else if (block.isAttachedSign()) {
+            val signs = block.attachedSign()
+            signs.forEach({
+                SocialBuildSign.breakSign(it.getLocation(), e, player)
+            })
         }
     }
 
@@ -90,7 +84,7 @@ public class SignEventsController : Listener {
         val block = e.getClickedBlock()
         val player = e.getPlayer()
 
-        if (!block.isSignItem()) {
+        if (block == null || !block.isSignItem()) {
             return
         }
 
@@ -116,7 +110,7 @@ public class SignEventsController : Listener {
         if (player.canGood(sign)) {
             Good.create(player.uuid(), sign.params.id).save()
             sign.updateGoodCount(block.getState() as Sign)
-            Notifier.sendGood(player)
+            Notifier.sentGood(player)
         } else {
             Notifier.failToSendGood(player)
         }

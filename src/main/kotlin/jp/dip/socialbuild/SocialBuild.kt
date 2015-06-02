@@ -19,13 +19,20 @@ public class SocialBuild : JavaPlugin() {
     override fun onEnable() {
         getLogger().log(Level.INFO, "SocialBuild Enabled !!")
         saveDefaultConfig()
+        setupMessage()
         setupDatabase()
-        getServer().getPluginManager().registerEvents(SignEventsController(), this)
-        getCommand("sb").setExecutor(CommandDispatcher())
+        registerClasses()
     }
 
     override fun onDisable() {
         getLogger().log(Level.INFO, "SocialBuild Disabled !!")
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // private
+
+    private fun setupMessage() {
+        Message.messages = messageConfig()
     }
 
     private fun setupDatabase() {
@@ -37,7 +44,16 @@ public class SocialBuild : JavaPlugin() {
         GoodRepository.setupTable(config)
     }
 
+    private fun registerClasses() {
+        getServer().getPluginManager().registerEvents(SignEventsController(), this)
+        getCommand("sb").setExecutor(CommandDispatcher())
+    }
+
     private fun databaseConfig(): Map<String, Any> {
         return getConfig().getConfigurationSection("database").getValues(false)
+    }
+
+    private fun messageConfig(): Map<String, Any> {
+        return getConfig().getConfigurationSection("message").getValues(false)
     }
 }

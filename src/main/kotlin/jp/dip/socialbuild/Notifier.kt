@@ -3,12 +3,12 @@ package jp.dip.socialbuild
 import org.bukkit.entity.Player
 import jp.dip.socialbuild.extension.blue
 import org.bukkit.Bukkit
-import jp.dip.socialbuild.extension.green
 import jp.dip.socialbuild.extension.red
 import jp.dip.socialbuild.extension.darkAqua
 import jp.dip.socialbuild.extension.yellow
 import jp.dip.socialbuild.model.Person
 import jp.dip.socialbuild.extension.prettyString
+import jp.dip.socialbuild.extension.green
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -17,63 +17,75 @@ import jp.dip.socialbuild.extension.prettyString
 public class Notifier {
     class object {
         public fun noPermission(player: Player, permission: String) {
-            player.notice("you don't have ${permission} permission")
+            player.notice(Message["noPermission"].yellow())
         }
 
         public fun createSign(player: Player) {
-            player.notice("Created a social build sign !!".blue())
-            broadcast(player.getName().green() + " Created a social build sign at".blue() + " ${player.getLocation().prettyString()}".yellow() + " !!".blue())
+            player.notice(Message["createdSign"].blue())
+
+            val message = Message["createdSignBroadcast"].blue()
+                    .replace("{{player}}", player.getName())
+                    .replace("{{location}}", player.getLocation().prettyString())
+            broadcast(message)
         }
 
         public fun failToCreateSign(player: Player) {
-            player.notice("Failed to creat a social build sign".red())
+            player.notice(Message["failToCreateSign"].red())
         }
 
         public fun destroySign(player: Player) {
-            player.notice("Destroyed the social build sign".blue())
+            player.notice(Message["destroyedSign"].blue())
         }
 
         public fun failToDestroySign(player: Player) {
-            player.notice("Fail to destroyed the social build sign".red())
+            player.notice(Message["failToDestroySign"].red())
         }
 
-        public fun sendGood(player: Player) {
-            player.notice("Sent good !!".blue())
+        public fun sentGood(player: Player) {
+            player.notice(Message["sentGood"].blue())
         }
 
         public fun failToSendGood(player: Player) {
-            player.notice("Fail to sent good".red())
+            player.notice(Message["failToSendGood"].red())
         }
 
         public fun cancelGood(player: Player) {
-            player.notice("Cancel good".yellow())
+            player.notice(Message["cancelGood"].yellow())
         }
 
         public fun failToCancelGood(player: Player) {
-            player.notice("Fail to cancel good".red())
+            player.notice(Message["failToCancelGood"].red())
         }
 
         public fun goodCount(player: Player, count: Int) {
-            player.notice("You have ${count} goods !!".blue())
+            val message = Message["goodCount"].blue()
+                    .replace("{{count}}", count.toString())
+            player.notice(message)
         }
 
         public fun othersGoodCount(player: Player, other: Person, count: Int) {
-            player.notice("${other.params.name} has ${count} goods !!".blue())
+            val message = Message["othersGoodCount"].blue()
+                    .replace("{{other}}", other.params.name)
+                    .replace("{{count}}", count.toString())
+
+            player.notice(message)
         }
 
         public fun noPlayer(player: Player, name: String) {
-            player.notice("${name} does not exists".red())
+            val message = Message["noPlayer"].red()
+                    .replace("{{player}}", name)
+            player.notice(message)
         }
 
         public fun fillInName(player: Player) {
-            player.notice("fill in the sign name on second line !!".yellow())
+            player.notice(Message["fillInName"].yellow())
         }
 
         public fun help(player: Player) {
             player.notice("=========================".yellow())
-            player.notice("/sb - show own good count".blue())
-            player.notice("/sb <name> - show <name>'s good count".blue())
-            player.notice("/sb help - show commands help".blue())
+            player.notice("/sb - ".blue() + Message["helpSB"].blue())
+            player.notice("/sb <name> - ".blue() + Message["helpOthers"].blue())
+            player.notice("/sb help - ".blue() + Message["helpHelp"].blue())
             player.notice("=========================".yellow())
         }
     }
@@ -91,5 +103,5 @@ public fun Any.broadcast(message: String) {
 // private
 
 private fun header(): String {
-    return "[SB] ".darkAqua()
+    return "[SocialBuild] ".darkAqua()
 }

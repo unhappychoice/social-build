@@ -3,3 +3,22 @@ database:
   url: mysql://localhost   # url to mysql server       ( will be ignored when use sqlite
   username: username       # user name of mysql server ( will be ignored when use sqlite
   password: password       # password of  mysql server ( will be ignored when use sqlite
+
+message:
+  createdSign: 'Created a social build sign !!'
+  createdSignBroadcast: '{{player}} created a social build sign at {{location}}'
+  destroyedSign: 'Destroyed the social build sign'
+  sentGood: 'Sent a good !!'
+  cancelGood: 'Cancel the good'
+  goodCount: 'You have {{count}} goods !!'
+  othersGoodCount: '{{other}} has {{count}} goods !!'
+  noPlayer: '{{player}} does not exists'
+  fillInName: 'Fill in the sign name on second line !!'
+  noPermission: 'You dont have the ${permission} permission'
+  failToDestroySign: 'Fail to destroy the social build sign'
+  failToCreateSign: 'Failed to create a social build sign'
+  failToSendGood: 'Fail to send good'
+  failToCancelGood: 'Fail to cancel the good'
+  helpSB: 'Show own good count'
+  helpOthers: 'Show <name>s good count'
+  helpHelp: 'Show commands help'

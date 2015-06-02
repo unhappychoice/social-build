@@ -7,6 +7,9 @@ import org.bukkit.Location
 import jp.dip.socialbuild.repository.GoodRepository
 import jp.dip.socialbuild.extension.currentDate
 import jp.dip.socialbuild.extension.uuid
+import org.bukkit.event.block.BlockBreakEvent
+import jp.dip.socialbuild.extension.canBreak
+import jp.dip.socialbuild.Notifier
 
 /**
  * Created by unhappychoice on 2015/05/24.
@@ -14,6 +17,23 @@ import jp.dip.socialbuild.extension.uuid
 
 public class SocialBuildSign(val params: SignParams) {
     class object {
+
+        /**
+         * break the sign
+         */
+        public fun breakSign(location: Location, e: BlockBreakEvent, player: Player) {
+            val sign = SocialBuildSign.find(location)
+            if (sign == null) {
+                return
+            }
+
+            if (player.canBreak(sign) && sign.destroy()) {
+                Notifier.destroySign(player)
+            } else {
+                e.setCancelled(true)
+                Notifier.failToDestroySign(player)
+            }
+        }
 
         /**
          * factory
