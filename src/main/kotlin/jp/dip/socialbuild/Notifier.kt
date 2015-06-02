@@ -64,6 +64,10 @@ public class Notifier {
         public fun noPlayer(player: Player, name: String) {
             player.notice("${name} does not exists".red())
         }
+
+        public fun fillInName(player: Player) {
+            player.notice("fill in the sign name on second line !!".yellow())
+        }
     }
 }
 

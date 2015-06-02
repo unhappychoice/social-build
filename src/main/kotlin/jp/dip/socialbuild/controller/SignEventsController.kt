@@ -40,6 +40,11 @@ public class SignEventsController : Listener {
             return
         }
 
+        if (lines[1].isEmpty()) {
+            Notifier.fillInName(player)
+            return
+        }
+
         val sign = SocialBuildSign.build(player, location, lines)
 
         if (player.canPlace() && sign.save()) {
